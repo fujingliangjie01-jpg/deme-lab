@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>BOAT HUNTER 出目研究所 Vol.4</title>
+<title>BOAT HUNTER 出目研究所 Vol.5</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#07131d;color:#eef7fc;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 .wrap{max-width:900px;margin:auto;padding:14px}.head{padding:14px 0}.vol{position:fixed;right:9px;top:7px;font-size:10px;opacity:.45}
@@ -20,7 +20,7 @@ button{border:0;padding:13px;font-weight:900}.primary{margin-top:12px;background
 </style>
 </head>
 <body>
-<div class="vol">Vol.4</div>
+<div class="vol">Vol.5</div>
 <div class="wrap">
   <div class="head"><h1>BOAT HUNTER 出目研究所</h1><div class="sub">HUNTER CYCLE / 1レース単位研究データベース基盤</div></div>
   <div class="cycle">BOAT HUNTER → 出目研究所 → 比較・研究 → 次レース予測 → BOAT HUNTER買い目 → 実結果 → 出目研究所</div>
@@ -150,6 +150,30 @@ $("exportBtn").onclick=()=>{const blob=new Blob([JSON.stringify({format:"DEME_LA
 $("clearBtn").onclick=()=>{if(confirm("研究所の端末内データを全削除しますか？")){localStorage.removeItem(DB);render()}};
 
 const INBOX="BH_DEME_LAB_INBOX_V3";
+
+function receiveHunterHash(){
+  try{
+    const m=location.hash.match(/(?:^#|&)hunter=([^&]+)/);
+    if(!m)return 0;
+    const raw=decodeURIComponent(m[1]);
+    const json=decodeURIComponent(escape(atob(raw)));
+    const item=JSON.parse(json);
+    if(!item||item.source!=="BOAT_HUNTER")return 0;
+    const r=normalizeIncoming(item);
+    if(!r.race.date||!r.race.stadium||!r.race.raceNo)return 0;
+    upsert(r); fill(r);
+    $("receiveState").textContent=`HUNTERから ${r.race.stadium} ${r.race.raceNo}R 受信完了`;
+    $("receiveNote").textContent="BOAT HUNTERから直接受信しました。同一レースは更新されます。";
+    try{history.replaceState(null,"",location.pathname+location.search)}catch(_){}
+    return 1;
+  }catch(e){
+    console.warn("hunter hash receive",e);
+    $("receiveState").textContent="HUNTERデータ受信エラー";
+    $("receiveNote").textContent="送信データを読み込めませんでした。";
+    return 0;
+  }
+}
+
 function syncInbox(){
   let box=[];try{const x=JSON.parse(localStorage.getItem(INBOX)||"[]");box=Array.isArray(x)?x:[]}catch(_){}
   let n=0,last=null;
@@ -182,6 +206,7 @@ try{
     syncInbox();
   };
 }catch(_){}
+receiveHunterHash();
 syncInbox();
 render();
 })();
