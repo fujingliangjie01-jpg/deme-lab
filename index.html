@@ -1,99 +1,155 @@
-<!DOCTYPE html>
-BOAT HUNTER 出目研究所 Vol.1
-Vol.1
-BOAT HUNTER 出目研究所
-HUNTER CYCLE / 1レース単位研究データベース基盤
-
-      BOAT HUNTER → 出目研究所 → 比較・研究 → 次レース予測 →
-      BOAT HUNTER買い目 → 実結果 → 出目研究所
-    </div>
-
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BOAT HUNTER 出目研究所 Vol.2</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#07131d;color:#eef7fc;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{max-width:900px;margin:auto;padding:14px}.head{padding:14px 0}.vol{position:fixed;right:9px;top:7px;font-size:10px;opacity:.45}
+h1{margin:0;font-size:28px}.sub{color:#89a8ba;font-size:12px;margin-top:6px}.cycle{margin:14px 0;padding:11px;border:1px solid #1f526d;border-radius:14px;background:#0b202d;color:#aee7ff;font-size:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#102534;border:1px solid #ffffff14;border-radius:14px;padding:12px;text-align:center}.stat b{display:block;font-size:25px}.stat span{font-size:10px;color:#90a9b8}
+.panel{margin-top:14px;background:#0b1b27;border:1px solid #ffffff18;border-radius:18px;padding:14px}h2{font-size:18px;margin:0 0 12px}
+.grid3{display:grid;grid-template-columns:1.2fr 1fr .7fr;gap:8px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+label{display:block;font-size:11px;color:#91aabd;margin:9px 0 5px}input,select,textarea,button{font:inherit;width:100%;border-radius:12px}
+input,select,textarea{border:1px solid #ffffff18;background:#07131d;color:#fff;padding:10px}textarea{min-height:82px;resize:vertical}
+button{border:0;padding:13px;font-weight:900}.primary{margin-top:12px;background:#159ce8;color:#fff}.secondary{background:#173449;color:#dff5ff}.danger{background:#3b1518;color:#ffb2b6}
+.notice{font-size:11px;color:#8099a9;margin-top:8px;line-height:1.5}.inbox{border:1px solid #38bdf866;background:#082737;border-radius:14px;padding:11px;margin-bottom:12px}.inbox b{color:#76dcff}.rowBtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.list{display:grid;gap:8px}.race{background:#07131d;border:1px solid #ffffff16;border-radius:13px;padding:10px}.raceTop{display:flex;justify-content:space-between;gap:8px;font-weight:900}.tag{font-size:10px;padding:3px 7px;border-radius:99px;background:#17394d;color:#aee8ff}.ok{background:#17472e;color:#9af0ba}.muted{font-size:11px;color:#849baa;margin-top:5px}.empty{text-align:center;color:#6f8797;padding:18px}
+@media(max-width:620px){.grid3{grid-template-columns:1fr 1fr}.grid3>div:first-child{grid-column:1/-1}.grid2{grid-template-columns:1fr 1fr}h1{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="vol">Vol.2</div>
+<div class="wrap">
+  <div class="head"><h1>BOAT HUNTER 出目研究所</h1><div class="sub">HUNTER CYCLE / 1レース単位研究データベース基盤</div></div>
+  <div class="cycle">BOAT HUNTER → 出目研究所 → 比較・研究 → 次レース予測 → BOAT HUNTER買い目 → 実結果 → 出目研究所</div>
+  <div class="stats">
     <div class="stat"><b id="count">0</b><span>研究レース</span></div>
     <div class="stat"><b id="complete">0</b><span>結果確定</span></div>
     <div class="stat"><b id="pending">0</b><span>結果待ち</span></div>
+  </div>
 
-BOAT HUNTER データ受信
-      <div>
-        <label>日付</label>
-        <input id="date" type="date">
-      </div>
-      <div>
-        <label>場</label>
-        <input id="stadium" placeholder="例：戸田">
-      </div>
-      <div>
-        <label>R</label>
-        <select id="raceNo"></select>
+  <section class="panel">
+    <h2>BOAT HUNTER データ受信</h2>
+    <div class="inbox">
+      <b id="receiveState">受信待ち</b>
+      <div class="notice" id="receiveNote">BOAT HUNTERから書き出した連携JSONを読み込むと、自動で同一レースを追加・更新します。</div>
+      <div class="rowBtns">
+        <label class="secondary" style="display:grid;place-items:center;margin:0;cursor:pointer">HUNTERデータ読込<input id="hunterImport" type="file" accept=".json,application/json" hidden></label>
+        <button class="secondary" id="pasteBtn" type="button">JSON貼付で受信</button>
       </div>
     </div>
 
+    <div class="grid3">
+      <div><label>日付</label><input id="date" type="date"></div>
+      <div><label>場</label><input id="stadium" placeholder="例：戸田"></div>
+      <div><label>R</label><select id="raceNo"></select></div>
+    </div>
     <div class="grid2">
-      <div>
-        <label>風速 m/s</label>
-        <input id="windSpeed" type="number" step="0.1" placeholder="例：4.0">
-      </div>
-      <div>
-        <label>風向</label>
-        <input id="windDir" placeholder="向かい / 追い / 横">
-      </div>
-      <div>
-        <label>潮位</label>
-        <input id="tide" placeholder="例：上げ・満潮前">
-      </div>
-      <div>
-        <label>場特性</label>
-        <input id="stadiumTrait" placeholder="場特性">
-      </div>
+      <div><label>風速 m/s</label><input id="windSpeed" type="number" step="0.1"></div>
+      <div><label>風向</label><input id="windDir"></div>
+      <div><label>潮位</label><input id="tide"></div>
+      <div><label>場特性</label><input id="stadiumTrait"></div>
     </div>
-
-    <label>レース展望</label>
-    <textarea id="outlook" placeholder="BOAT HUNTERのレース展望"></textarea>
-
-    <label>選手力量差・6艇比較</label>
-    <textarea id="powerGap" placeholder="6艇の力量差・比較情報"></textarea>
-
-    <label>直前情報の優劣</label>
-    <textarea id="beforeInfo" placeholder="展示ST・一周・回り・直線・展示・チルト等"></textarea>
-
-    <label>6艇評価</label>
-    <textarea id="sixEval" placeholder="1〜6号艇の6艇診断評価"></textarea>
-
-    <label>展開評価</label>
-    <textarea id="developEval" placeholder="展開診断評価・攻め艇・残り艇など"></textarea>
-
+    <label>レース展望</label><textarea id="outlook"></textarea>
+    <label>選手力量差・6艇比較</label><textarea id="powerGap"></textarea>
+    <label>直前情報の優劣</label><textarea id="beforeInfo"></textarea>
+    <label>6艇評価</label><textarea id="sixEval"></textarea>
+    <label>展開評価</label><textarea id="developEval"></textarea>
     <div class="grid2">
-      <div>
-        <label>想定決まり手</label>
-        <select id="expectedMove">
-          <option value="">未設定</option>
-          <option>逃げ</option>
-          <option>差し</option>
-          <option>まくり</option>
-          <option>まくり差し</option>
-          <option>複合・不透明</option>
-        </select>
-      </div>
-      <div>
-        <label>想定攻め艇</label>
-        <select id="attacker">
-          <option value="">未設定</option>
-          <option>1号艇</option><option>2号艇</option><option>3号艇</option>
-          <option>4号艇</option><option>5号艇</option><option>6号艇</option>
-        </select>
-      </div>
+      <div><label>想定決まり手</label><select id="expectedMove"><option value="">未設定</option><option>逃げ</option><option>差し</option><option>まくり</option><option>まくり差し</option><option>複合・不透明</option></select></div>
+      <div><label>想定攻め艇</label><select id="attacker"><option value="">未設定</option><option>1号艇</option><option>2号艇</option><option>3号艇</option><option>4号艇</option><option>5号艇</option><option>6号艇</option></select></div>
     </div>
+    <label>BOAT HUNTERから受け取った6艇データ JSON</label><textarea id="boatsJson"></textarea>
+    <button class="primary" id="saveBtn" type="button">このレースを研究所へ保存</button>
+    <div class="notice">Vol.2は研究データを端末内に保存します。HUNTER連携JSONの読み込みでは同じ「日付・場・R」を重複登録せず更新します。</div>
+  </section>
 
-    <label>BOAT HUNTERから受け取った6艇データ JSON</label>
-    <textarea id="boatsJson" placeholder='将来BOAT HUNTERから自動受信。例：[{"boat":1,...}]'></textarea>
+  <section class="panel"><h2>研究レース</h2><div id="raceList" class="list"></div></section>
+  <section class="panel"><h2>研究データ管理</h2>
+    <div class="rowBtns"><button class="secondary" id="exportBtn">研究データをJSON出力</button><button class="danger" id="clearBtn">端末内研究データを全削除</button></div>
+  </section>
+</div>
 
-    <button class="primary" onclick="saveRace()">このレースを研究所へ保存</button>
-    <div class="notice">
-      Vol.1では端末内（localStorage）へ保存します。
-      BOAT HUNTERとの自動連携・永続DBは次段階で接続できる構造にしています。
-    </div>
+<script>
+(()=>{
+"use strict";
+const DB="DEME_LAB_RACES_V2",$=id=>document.getElementById(id);
+const read=()=>{try{const x=JSON.parse(localStorage.getItem(DB)||"[]");return Array.isArray(x)?x:[]}catch(_){return []}};
+const write=x=>localStorage.setItem(DB,JSON.stringify(x));
+const val=id=>$(id)?.value||"";
+const safe=x=>x==null?"":(typeof x==="string"?x:JSON.stringify(x,null,2));
+for(let i=1;i<=12;i++){const o=document.createElement("option");o.value=i;o.textContent=i+"R";$("raceNo").appendChild(o)}
+$("date").value=new Date().toLocaleDateString("sv-SE");
 
-研究レース
-
-研究データ管理
-研究データをJSON出力
-端末内研究データを全削除
+function keyOf(r){return r.key||`${r.race?.date||""}_${r.race?.stadium||""}_${r.race?.raceNo||""}R`}
+function normalizeIncoming(x){
+  const h=x.hunter||{}, lr=h.learnedRecord||x.learnedRecord||{};
+  const race=x.race||lr.race||{};
+  const env=x.environment||lr.environment||{};
+  const res=x.result||lr.result||{};
+  return {
+    schemaVersion:2,key:keyOf(x),source:"BOAT_HUNTER",hunterCycle:true,receivedAt:new Date().toISOString(),
+    race:{date:race.date||"",stadium:race.stadium||"",raceNo:Number(race.raceNo||race.race||0)||null},
+    environment:{windSpeed:env.windSpeed??"",windDirection:env.windDirection||"",tide:env.tide||"",stadiumTrait:env.stadiumTrait||""},
+    hunterInput:{
+      outlook:safe(h.outlook??lr.outlook??lr.preview??""),
+      powerGap:safe(h.powerGap??lr.powerGap??lr.rankComparison??""),
+      beforeInfo:safe(h.beforeInfo??lr.beforeInfo??""),
+      sixBoatEvaluation:safe(h.sixBoatEvaluation??lr.sixBoatEvaluation??lr.ability??""),
+      developmentEvaluation:safe(h.developmentEvaluation??lr.developmentEvaluation??lr.flow??""),
+      expectedMove:h.expectedMove||lr.expectedMove||"",
+      expectedAttacker:h.expectedAttacker||lr.expectedAttacker||"",
+      boats:h.boats??lr.boats??[],
+      marketComparison:h.marketComparison??null,odds120:h.odds120??null,betPrediction:h.betPrediction??null,
+      raw:x
+    },
+    research:{escape:null,sashi:null,makuri:null,makuriSashi:null,followBoats:[],axisCandidates:[],lowArrivalCandidates:[],similarRaceIds:[]},
+    result:{confirmed:Array.isArray(res.order)&&res.order.length===3,order:res.order||[],trifecta:res.combo||(Array.isArray(res.order)?res.order.join("-"):""),winningMove:res.technique||"",actualAttacker:res.actualAttacker||"",attackOutcome:res.attackOutcome||"",followBoats:res.followBoats||[],outBoats:res.outBoats||[],payout:Number(res.payout||0)||0,notes:res.notes||""}
+  };
+}
+function upsert(rec){
+  const a=read(), k=keyOf(rec), i=a.findIndex(x=>keyOf(x)===k);
+  if(i>=0){
+    const old=a[i];
+    rec.research=old.research||rec.research;
+    if(!rec.result?.confirmed && old.result?.confirmed)rec.result=old.result;
+    a[i]={...old,...rec,key:k};
+  }else a.push({...rec,key:k});
+  write(a);render();return rec;
+}
+function formRecord(){
+  let boats=[];try{boats=JSON.parse(val("boatsJson")||"[]")}catch(_){boats=[]}
+  return {schemaVersion:2,source:"MANUAL",hunterCycle:true,createdAt:new Date().toISOString(),
+    race:{date:val("date"),stadium:val("stadium"),raceNo:Number(val("raceNo"))},
+    environment:{windSpeed:val("windSpeed"),windDirection:val("windDir"),tide:val("tide"),stadiumTrait:val("stadiumTrait")},
+    hunterInput:{outlook:val("outlook"),powerGap:val("powerGap"),beforeInfo:val("beforeInfo"),sixBoatEvaluation:val("sixEval"),developmentEvaluation:val("developEval"),expectedMove:val("expectedMove"),expectedAttacker:val("attacker"),boats},
+    research:{escape:null,sashi:null,makuri:null,makuriSashi:null,followBoats:[],axisCandidates:[],lowArrivalCandidates:[],similarRaceIds:[]},
+    result:{confirmed:false,order:[],trifecta:"",winningMove:"",actualAttacker:"",attackOutcome:"",followBoats:[],outBoats:[],payout:0,notes:""}};
+}
+function fill(r){
+  $("date").value=r.race?.date||"";$("stadium").value=r.race?.stadium||"";$("raceNo").value=r.race?.raceNo||1;
+  $("windSpeed").value=r.environment?.windSpeed??"";$("windDir").value=r.environment?.windDirection||"";$("tide").value=r.environment?.tide||"";$("stadiumTrait").value=r.environment?.stadiumTrait||"";
+  const h=r.hunterInput||{};$("outlook").value=h.outlook||"";$("powerGap").value=h.powerGap||"";$("beforeInfo").value=h.beforeInfo||"";$("sixEval").value=h.sixBoatEvaluation||"";$("developEval").value=h.developmentEvaluation||"";$("expectedMove").value=h.expectedMove||"";$("attacker").value=h.expectedAttacker||"";
+  $("boatsJson").value=safe(h.boats||[]);
+}
+function render(){
+  const a=read(),done=a.filter(x=>x.result?.confirmed).length;$("count").textContent=a.length;$("complete").textContent=done;$("pending").textContent=a.length-done;
+  const list=$("raceList");if(!a.length){list.innerHTML='<div class="empty">まだ研究レースはありません</div>';return}
+  list.innerHTML=a.slice().sort((x,y)=>String(y.receivedAt||y.createdAt||"").localeCompare(String(x.receivedAt||x.createdAt||""))).map(r=>`<div class="race"><div class="raceTop"><span>${r.race?.date||"—"}　${r.race?.stadium||"—"} ${r.race?.raceNo||"—"}R</span><span class="tag ${r.result?.confirmed?"ok":""}">${r.result?.confirmed?"結果確定":"結果待ち"}</span></div><div class="muted">${r.result?.confirmed?`結果 ${r.result.trifecta||r.result.order?.join("-")||"—"} ／ ${r.result.winningMove||"決まり手未取得"}`:"BOAT HUNTER研究データ保存済み"}</div></div>`).join("");
+}
+async function importHunter(file){
+  const x=JSON.parse(await file.text()), arr=Array.isArray(x)?x:(Array.isArray(x.records)?x.records:[x]);
+  let n=0;for(const item of arr){if(item&&(item.source==="BOAT_HUNTER"||item.hunterCycle)){const r=normalizeIncoming(item);if(r.race.date&&r.race.stadium&&r.race.raceNo){upsert(r);fill(r);n++}}}
+  $("receiveState").textContent=n?`${n}R 受信完了`:"受信できるHUNTERデータがありません";$("receiveNote").textContent=n?"同一レースは自動更新しました。":"JSON形式を確認してください";
+}
+$("saveBtn").onclick=()=>{const r=formRecord();r.key=keyOf(r);upsert(r)};
+$("hunterImport").onchange=async e=>{try{if(e.target.files?.[0])await importHunter(e.target.files[0])}catch(_){$("receiveState").textContent="読込失敗"}finally{e.target.value=""}};
+$("pasteBtn").onclick=()=>{const t=prompt("BOAT HUNTER連携JSONを貼り付け");if(!t)return;try{const x=JSON.parse(t),r=normalizeIncoming(x);upsert(r);fill(r);$("receiveState").textContent="1R 受信完了"}catch(_){$("receiveState").textContent="JSON形式エラー"}};
+$("exportBtn").onclick=()=>{const blob=new Blob([JSON.stringify({format:"DEME_LAB",version:2,exportedAt:new Date().toISOString(),races:read()},null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="DEME_LAB_VOL2_DATA.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+$("clearBtn").onclick=()=>{if(confirm("研究所の端末内データを全削除しますか？")){localStorage.removeItem(DB);render()}};
+render();
+})();
+</script>
+</body></html>
