@@ -1,1 +1,99 @@
+<!DOCTYPE html>
+BOAT HUNTER 出目研究所 Vol.1
+Vol.1
+BOAT HUNTER 出目研究所
+HUNTER CYCLE / 1レース単位研究データベース基盤
 
+      BOAT HUNTER → 出目研究所 → 比較・研究 → 次レース予測 →
+      BOAT HUNTER買い目 → 実結果 → 出目研究所
+    </div>
+
+    <div class="stat"><b id="count">0</b><span>研究レース</span></div>
+    <div class="stat"><b id="complete">0</b><span>結果確定</span></div>
+    <div class="stat"><b id="pending">0</b><span>結果待ち</span></div>
+
+BOAT HUNTER データ受信
+      <div>
+        <label>日付</label>
+        <input id="date" type="date">
+      </div>
+      <div>
+        <label>場</label>
+        <input id="stadium" placeholder="例：戸田">
+      </div>
+      <div>
+        <label>R</label>
+        <select id="raceNo"></select>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div>
+        <label>風速 m/s</label>
+        <input id="windSpeed" type="number" step="0.1" placeholder="例：4.0">
+      </div>
+      <div>
+        <label>風向</label>
+        <input id="windDir" placeholder="向かい / 追い / 横">
+      </div>
+      <div>
+        <label>潮位</label>
+        <input id="tide" placeholder="例：上げ・満潮前">
+      </div>
+      <div>
+        <label>場特性</label>
+        <input id="stadiumTrait" placeholder="場特性">
+      </div>
+    </div>
+
+    <label>レース展望</label>
+    <textarea id="outlook" placeholder="BOAT HUNTERのレース展望"></textarea>
+
+    <label>選手力量差・6艇比較</label>
+    <textarea id="powerGap" placeholder="6艇の力量差・比較情報"></textarea>
+
+    <label>直前情報の優劣</label>
+    <textarea id="beforeInfo" placeholder="展示ST・一周・回り・直線・展示・チルト等"></textarea>
+
+    <label>6艇評価</label>
+    <textarea id="sixEval" placeholder="1〜6号艇の6艇診断評価"></textarea>
+
+    <label>展開評価</label>
+    <textarea id="developEval" placeholder="展開診断評価・攻め艇・残り艇など"></textarea>
+
+    <div class="grid2">
+      <div>
+        <label>想定決まり手</label>
+        <select id="expectedMove">
+          <option value="">未設定</option>
+          <option>逃げ</option>
+          <option>差し</option>
+          <option>まくり</option>
+          <option>まくり差し</option>
+          <option>複合・不透明</option>
+        </select>
+      </div>
+      <div>
+        <label>想定攻め艇</label>
+        <select id="attacker">
+          <option value="">未設定</option>
+          <option>1号艇</option><option>2号艇</option><option>3号艇</option>
+          <option>4号艇</option><option>5号艇</option><option>6号艇</option>
+        </select>
+      </div>
+    </div>
+
+    <label>BOAT HUNTERから受け取った6艇データ JSON</label>
+    <textarea id="boatsJson" placeholder='将来BOAT HUNTERから自動受信。例：[{"boat":1,...}]'></textarea>
+
+    <button class="primary" onclick="saveRace()">このレースを研究所へ保存</button>
+    <div class="notice">
+      Vol.1では端末内（localStorage）へ保存します。
+      BOAT HUNTERとの自動連携・永続DBは次段階で接続できる構造にしています。
+    </div>
+
+研究レース
+
+研究データ管理
+研究データをJSON出力
+端末内研究データを全削除
