@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>BOAT HUNTER 出目研究所 Vol.5</title>
+<title>BOAT HUNTER 出目研究所 Vol.7</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#07131d;color:#eef7fc;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 .wrap{max-width:900px;margin:auto;padding:14px}.head{padding:14px 0}.vol{position:fixed;right:9px;top:7px;font-size:10px;opacity:.45}
@@ -18,9 +18,27 @@ button{border:0;padding:13px;font-weight:900}.primary{margin-top:12px;background
 .list{display:grid;gap:8px}.race{background:#07131d;border:1px solid #ffffff16;border-radius:13px;padding:10px}.raceTop{display:flex;justify-content:space-between;gap:8px;font-weight:900}.tag{font-size:10px;padding:3px 7px;border-radius:99px;background:#17394d;color:#aee8ff}.ok{background:#17472e;color:#9af0ba}.muted{font-size:11px;color:#849baa;margin-top:5px}.empty{text-align:center;color:#6f8797;padding:18px}
 @media(max-width:620px){.grid3{grid-template-columns:1fr 1fr}.grid3>div:first-child{grid-column:1/-1}.grid2{grid-template-columns:1fr 1fr}h1{font-size:24px}}
 </style>
+
+<style id="labVol6Readable">
+#hunterReadableV6{margin:14px 0 18px}
+.v6hero{padding:14px;border:1px solid #19506b;border-radius:16px;background:#071b27}
+.v6head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}
+.v6race{font-size:22px;font-weight:900;color:#eaf8ff}.v6sub{font-size:11px;color:#82a8bb}
+.v6grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.v6box{padding:10px;border-radius:12px;background:#0b2635;border:1px solid #153d50;min-height:58px}
+.v6label{font-size:10px;color:#7fa5b8;margin-bottom:4px}.v6val{font-size:15px;font-weight:800;color:#eefaff;word-break:break-word}
+.v6section{margin-top:12px}.v6title{font-size:13px;font-weight:900;color:#8ddfff;margin:0 0 7px}
+.v6text{white-space:pre-wrap;line-height:1.55;font-size:12px;color:#dcebf2;background:#061620;border:1px solid #153646;border-radius:12px;padding:10px;max-height:150px;overflow:auto}
+.v6boats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+.v6boat{border-radius:9px;padding:7px 2px;text-align:center;font-size:10px;font-weight:800;background:#102b39;border:1px solid #1c475c}
+.v6num{font-size:17px;font-weight:950;display:block;margin-bottom:2px}
+.v6result{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.v6result .v6box{text-align:center}
+@media(max-width:520px){.v6boats{gap:3px}.v6boat{font-size:9px;padding:6px 1px}.v6num{font-size:15px}}
+</style>
 </head>
 <body>
-<div class="vol">Vol.5</div>
+<div class="vol">Vol.7</div>
 <div class="wrap">
   <div class="head"><h1>BOAT HUNTER 出目研究所</h1><div class="sub">HUNTER CYCLE / 1レース単位研究データベース基盤</div></div>
   <div class="cycle">BOAT HUNTER → 出目研究所 → 比較・研究 → 次レース予測 → BOAT HUNTER買い目 → 実結果 → 出目研究所</div>
@@ -30,7 +48,29 @@ button{border:0;padding:13px;font-weight:900}.primary{margin-top:12px;background
     <div class="stat"><b id="pending">0</b><span>結果待ち</span></div>
   </div>
 
-  <section class="panel">
+  
+<section id="hunterReadableV6">
+ <div class="v6hero">
+  <div class="v6head"><div><div class="v6race" id="v6Race">HUNTER受信データ</div><div class="v6sub" id="v6Date">未受信</div></div><div class="v6sub">レースカルテ</div></div>
+  <div class="v6grid">
+   <div class="v6box"><div class="v6label">風</div><div class="v6val" id="v6Wind">—</div></div>
+   <div class="v6box"><div class="v6label">潮位・場特性</div><div class="v6val" id="v6Venue">—</div></div>
+  </div>
+  <div class="v6section"><div class="v6title">6艇診断</div><div class="v6boats" id="v6Boats"></div></div>
+  <div class="v6section"><div class="v6title">選手力量差・6艇比較</div><div class="v6text" id="v6Power">—</div></div>
+  <div class="v6section"><div class="v6title">展開予測</div><div class="v6grid">
+   <div class="v6box"><div class="v6label">想定決まり手</div><div class="v6val" id="v6Move">未設定</div></div>
+   <div class="v6box"><div class="v6label">想定攻め艇</div><div class="v6val" id="v6Attack">未設定</div></div>
+  </div><div class="v6text" id="v6Flow" style="margin-top:7px">—</div></div>
+  <div class="v6section"><div class="v6title">HUNTER買い目</div><div class="v6text" id="v6Bet">—</div></div>
+  <div class="v6section"><div class="v6title">実結果</div><div class="v6result">
+   <div class="v6box"><div class="v6label">出目</div><div class="v6val" id="v6Order">—</div></div>
+   <div class="v6box"><div class="v6label">決まり手</div><div class="v6val" id="v6Technique">—</div></div>
+   <div class="v6box"><div class="v6label">配当</div><div class="v6val" id="v6Payout">—</div></div>
+  </div></div>
+ </div>
+</section>
+<section class="panel">
     <h2>BOAT HUNTER データ受信</h2>
     <div class="inbox">
       <b id="receiveState">HUNTER直接受信 待機中</b>
@@ -211,4 +251,92 @@ syncInbox();
 render();
 })();
 </script>
+
+<script id="labVol6ReadableJS">
+(()=>{
+ const $=id=>document.getElementById(id);
+ const clean=v=>String(v??"").replace(/\bNEXT\b[\s\S]*?\bVENUE\b/gi,"").replace(/\n{3,}/g,"\n\n").trim();
+ function lastRecord(){
+  try{const a=JSON.parse(localStorage.getItem("DEME_LAB_RACES_V2")||"[]");return Array.isArray(a)&&a.length?a[a.length-1]:null}catch(_){return null}
+ }
+ function renderV6(r){
+  r=r||lastRecord(); if(!r)return;
+  const race=r.race||{}, h=r.hunterInput||r.hunter||{}, env=r.environment||{}, res=r.result||{};
+  $("v6Race").textContent=`${race.stadium||race.stadiumName||"—"} ${race.raceNo||"—"}R`;
+  $("v6Date").textContent=race.date||"";
+  $("v6Wind").textContent=[env.windSpeed!=null&&env.windSpeed!==""?`${env.windSpeed}m`:"",env.windDirection||""].filter(Boolean).join(" / ")||"—";
+  $("v6Venue").textContent=[env.tide||"",env.venueFeature||env.stadiumFeature||""].filter(Boolean).join(" / ")||"—";
+  const boats=Array.isArray(h.boats)?h.boats:[];
+  $("v6Boats").innerHTML=Array.from({length:6},(_,i)=>{
+    const b=boats[i]||{}, ev=b.evaluation||b.grade||b.rank||"—";
+    return `<div class="v6boat"><span class="v6num">${i+1}</span>${ev}</div>`;
+  }).join("");
+  $("v6Power").textContent=clean(h.powerGap||h.sixBoatEvaluation||"—");
+  $("v6Move").textContent=h.expectedMove||"未設定";
+  $("v6Attack").textContent=h.expectedAttacker||"未設定";
+  $("v6Flow").textContent=clean(h.developmentEvaluation||h.outlook||"—");
+  $("v6Bet").textContent=clean(h.betPrediction||h.buyText||h.bet||"—");
+  const order=res.order||[];
+  $("v6Order").textContent=res.trifecta||res.combo||(Array.isArray(order)&&order.length?order.join("-"):"—");
+  $("v6Technique").textContent=res.winningMove||res.technique||"—";
+  $("v6Payout").textContent=Number(res.payout)>0?`${Number(res.payout).toLocaleString()}円`:"—";
+ }
+ window.labRenderReadableV6=renderV6;
+ document.addEventListener("DOMContentLoaded",()=>renderV6());
+ setTimeout(()=>renderV6(),300);
+ const old=window.receiveHunterHash;
+ if(typeof old==="function") window.receiveHunterHash=function(){const x=old.apply(this,arguments);setTimeout(()=>renderV6(),0);return x};
+})();
+</script>
+<style id="lab7Style">
+#lab7View{background:#202c35;border:1px solid #537181;border-radius:14px;padding:11px;margin:10px 0;color:#fff}
+#lab7View h2{font-size:18px;margin:2px 0 8px}#lab7Meta{font-size:12px;color:#bed1dc}
+#lab7Boats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:8px 0}
+.lab7Boat{border-radius:10px;padding:8px;background:#101c25;border-left:5px solid var(--lane);min-width:0}
+.lab7Boat b{font-size:16px}.lab7Boat p{font-size:11px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.45;margin:4px 0;color:#d5e0e8}
+.lab7Part{background:#101c25;border-radius:9px;margin:6px 0;padding:8px}
+.lab7Part summary{font-weight:900;cursor:pointer}.lab7Part pre{white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.5 system-ui;margin:7px 0 0;color:#e2edf3}
+#lab7Pick{width:100%;padding:10px;border-radius:8px;background:#f3e5b6;color:#20252a;font-weight:800}
+#lab7Status{color:#b6e9be;font-size:12px;margin:5px 0}
+</style>
+<section id="lab7View"><h2>出目研究所｜受信レース</h2><div id="lab7Status">受信待機中</div>
+<select id="lab7Pick" aria-label="研究レース選択"></select><div id="lab7Meta"></div><div id="lab7Boats"></div>
+<details class="lab7Part"><summary>6艇診断・世間比較</summary><pre id="lab7Compare">—</pre></details>
+<details class="lab7Part"><summary>レース展望・直前情報</summary><pre id="lab7Outlook">—</pre></details>
+<details class="lab7Part"><summary>HUNTER買い目・オッズ</summary><pre id="lab7Bets">—</pre></details>
+<details class="lab7Part"><summary>結果確認</summary><pre id="lab7Result">結果待ち</pre></details>
+</section>
+<script id="lab7JS">(()=>{'use strict';
+const DB='DEME_LAB_RACES_V2',$=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const read=()=>{try{const a=JSON.parse(localStorage.getItem(DB)||'[]');return Array.isArray(a)?a:[]}catch(_){return []}};
+function save(p){const a=read(),key=p.key||`${p.race.date}_${p.race.stadium}_${p.race.raceNo}R`;
+ const i=a.findIndex(r=>r.key===key),old=i>=0?a[i]:{};
+ const rec={...old,key,source:'BOAT_HUNTER',schemaVersion:4,receivedAt:new Date().toISOString(),race:p.race,
+ hunterInput:{...(old.hunterInput||{}),...(p.hunter||{}),raw:p},
+ result:p.result?.confirmed?p.result:(old.result||{confirmed:false}),research:old.research||{}};
+ if(i>=0)a[i]=rec;else a.push(rec);localStorage.setItem(DB,JSON.stringify(a));return rec;
+}
+function show(r){if(!r)return;const h=r.hunterInput||{},race=r.race||{},res=r.result||{};
+ $('lab7Meta').textContent=`${race.date||'—'} ｜ ${race.stadiumName||race.stadium||'—'} ${race.raceNo||'—'}R`;
+ const colors=['#fff','#bbb','#e62c37','#327ddc','#f4d92b','#35b760'];
+ $('lab7Boats').innerHTML=Array.from({length:6},(_,i)=>{const b=h.boats?.[i]||{};return `<div class="lab7Boat" style="--lane:${colors[i]}"><b>${i+1}号艇 ${esc(b.name||'未取得')}</b><p>${esc(b.stats||'データ未取得')}</p></div>`}).join('');
+ $('lab7Compare').textContent=h.marketComparison||h.sixBoatEvaluation||'未取得';
+ $('lab7Outlook').textContent=[h.developmentEvaluation,h.beforeInfo].filter(Boolean).join('\n\n')||'未取得';
+ $('lab7Bets').textContent=[h.betPrediction,h.oddsSummary].filter(Boolean).join('\n\n')||'未取得';
+ $('lab7Result').textContent=res.confirmed?`${res.trifecta||res.order?.join('-')||'—'}　${res.winningMove||''}`:'結果待ち';
+}
+function refresh(selected){const a=read().filter(r=>r.race?.date&&r.race?.raceNo).sort((x,y)=>String(y.receivedAt||'').localeCompare(String(x.receivedAt||'')));
+ const p=$('lab7Pick');p.innerHTML=a.map(r=>`<option value="${esc(r.key)}">${esc(r.race.date)} ${esc(r.race.stadiumName||r.race.stadium)} ${esc(r.race.raceNo)}R</option>`).join('');
+ const rec=a.find(r=>r.key===selected)||a[0];if(rec){p.value=rec.key;show(rec)}
+ $('lab7Status').textContent=a.length?`保存済み ${a.length}R｜同じレースは上書き更新`:'受信データなし';
+}
+$('lab7Pick').addEventListener('change',e=>refresh(e.target.value));
+try{const m=location.hash.match(/(?:^#|&)hunter599=([^&]+)/);if(m){
+ const p=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1])))));
+ if(p.schema!=='HUNTER_LAB_599'||p.source!=='BOAT_HUNTER'||!p.race?.date||!p.race?.stadium||!p.race?.raceNo)throw Error('転送形式が不正です');
+ const rec=save(p);history.replaceState(null,'',location.pathname+location.search);refresh(rec.key);
+ $('lab7Status').textContent=`受信完了：${rec.race.stadiumName||rec.race.stadium} ${rec.race.raceNo}R`;
+ }else refresh();}catch(e){refresh();$('lab7Status').textContent='受信失敗：'+e.message;console.error(e)}
+})();</script>
 </body></html>
