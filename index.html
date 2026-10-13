@@ -48,7 +48,6 @@ function records(){return read().filter(r=>result(r)).map(r=>{const z=result(r),
 const pct=(a,b)=>b?(100*a/b).toFixed(1)+'%':'—';
 function render(){const all=records(),vs=[...new Set(all.map(x=>x.race.stadiumName||x.race.stadium).filter(Boolean))].sort(),v=$('l12venue').value,d=$('l12direction').value;$('l12venue').innerHTML='<option value="">全国</option>'+vs.map(x=>'<option value="'+esc(x)+'">'+esc(x)+'</option>').join('');if(vs.includes(v))$('l12venue').value=v;const a=all.filter(x=>(!v||(x.race.stadiumName||x.race.stadium)===v)&&(!d||x.direction===d));const main=a.filter(x=>x.direction==='main').length,fail=a.filter(x=>x.direction==='fail').length,unknown=a.length-main-fail;$('l12status').textContent='確定レース '+a.length+'件｜本命・想定成功 '+main+'件｜攻め不発・想定外（推定） '+fail+'件｜主攻撃艇未取得 '+unknown+'件。※攻撃実施の事実は未確認。';const groups=new Map();for(const x of a){const k=x.inner+'｜'+x.signature;let g=groups.get(k);if(!g){g={key:k,n:0,main:0,fail:0,out:{}};groups.set(k,g)}g.n++;if(x.direction==='main')g.main++;if(x.direction==='fail')g.fail++;const o=x.result.order.join('-');g.out[o]=(g.out[o]||0)+1}const sorted=[...groups.values()].sort((x,y)=>y.n-x.n);$('l12groups').innerHTML=sorted.length?'<table><thead><tr><th>1〜3C階級・全国勝率 / 1〜6C攻め手並び</th><th>件数</th><th>本命</th><th>不発推定</th><th>出目上位</th></tr></thead><tbody>'+sorted.slice(0,40).map(g=>'<tr><td>'+esc(g.key)+'</td><td>'+g.n+'</td><td>'+g.main+'</td><td>'+g.fail+'</td><td>'+esc(Object.entries(g.out).sort((x,y)=>y[1]-x[1]).slice(0,3).map(([k,n])=>k+' '+n+'件('+pct(n,g.n)+')').join(' / '))+'</td></tr>').join('')+'</tbody></table>':'<div class="notice">該当する確定レースがありません。</div>';
 $('l12races').innerHTML=a.length?'<table><thead><tr><th>レース</th><th>想定</th><th>実結果</th><th>分類</th><th>防御・攻撃取得</th></tr></thead><tbody>'+a.slice().reverse().slice(0,80).map(x=>'<tr><td>'+esc(x.race.date||'')+' '+esc(x.race.stadiumName||x.race.stadium||'')+' '+esc(x.race.raceNo||'')+'R</td><td>'+esc(x.predictedHead?x.predictedHead+'C '+(x.predictedMethod||'攻め手不明'):'未取得')+'</td><td>'+esc(x.result.order.join('-'))+' '+esc(x.result.move)+'</td><td>'+esc(x.direction==='main'?'本命・想定成功':x.direction==='fail'?'想定不成立（攻め不発推定）':'判定保留')+'</td><td>'+x.defense.filter(y=>y.values.length).length+'/3防御・'+x.attack.filter(y=>y.some(t=>t.rate!==null)).length+'/6攻撃</td></tr>').join('')+'</tbody></table>':'<div class="notice">該当する確定レースがありません。</div>';window.__LAB12_RECORDS=all}
-window.__LAB12_GET_RECORDS=records;
 $('l12venue').onchange=render;$('l12direction').onchange=render;$('l12refresh').onclick=render;$('l12export').onclick=()=>{const data={format:'DEME_LAB_COURSE_ATTACK_RESEARCH',version:17,generatedAt:new Date().toISOString(),records:records()},blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='DEME_LAB_VOL17_COURSE_ATTACK_DATA.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};window.addEventListener('storage',e=>{if(!e.key||e.key==='DEME_LAB_RACES_V2'||e.key==='BH_DEME_LAB_INBOX_V3')render()});$('sync')?.addEventListener('click',()=>setTimeout(render,600));$('file')?.addEventListener('change',()=>setTimeout(render,700));const c=$('count');if(c)new MutationObserver(()=>setTimeout(render,50)).observe(c,{childList:true,subtree:true,characterData:true});render();})();</script><style id="lab13style">
 #lab13 .proposal{background:#0b1924;border:1px solid #365366;border-radius:10px;padding:11px;margin:9px 0}
 #lab13 .proposal h3{font-size:14px;margin:0 0 5px;color:#f4d481}
@@ -62,7 +61,7 @@ $('l12venue').onchange=render;$('l12direction').onchange=render;$('l12refresh').
  <p class="muted">1C逃げ率の水準と、2〜6Cで数値が最も高い攻め手を、レース前の条件として比較します。競艇場は上の研究フィルターと連動します。</p>
  <div id="l13status" class="lab12 notice">確定レースを確認中…</div>
  <div id="l13proposals"></div>
- <p class="caution">30件未満は候補を出しません。30〜99件は要検証、100件以上でも採用判断が必要です。出目は同条件の実績と同じ1C水準の全レースを比較します。攻撃力は事前データ、実際に攻めたかは映像未確認。候補をHUNTERに送ると、条件一致時に買い目1へ最大6点を反映します。</p>
+ <p class="caution">30件未満は候補を出しません。30〜99件は要検証、100件以上でも採用判断が必要です。出目は同条件の実績と同じ1C水準の全レースを比較します。攻撃力は事前データ、実際に攻めたかは映像未確認。候補をHUNTERに送ると、頭・決まり手別の着順実績を使い、HUNTERで最大20点に選定します。</p>
 </section>
 <script id="lab13AttackProposals">(()=>{'use strict';
  const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -117,7 +116,7 @@ $('l12venue').onchange=render;$('l12direction').onchange=render;$('l12refresh').
 <style id="lab14style">#l14send{width:100%;margin-top:10px;background:#e4a72b;color:#17232b}#l14state{font-size:11px;color:#b9cfda;margin-top:6px}</style>
 <script id="lab14RuleBridge">(()=>{'use strict';
  const STORE='DEME_LAB_ATTACK_RULES_V1',el=document.getElementById('lab13');if(!el)return;
- const button=document.createElement('button'),state=document.createElement('div');button.id='l14send';button.type='button';button.textContent='研究所の出目・軸候補をHUNTERへ送る';state.id='l14state';
+ const button=document.createElement('button'),state=document.createElement('div');button.id='l14send';button.type='button';button.textContent='攻めパターン候補をHUNTERへ送る';state.id='l14state';
  el.append(button,state);
  const venues=r=>String(r.race?.stadium||'').replace(/\D/g,'').padStart(2,'0');
  const valid=c=>/^([1-6]-){2}[1-6]$/.test(c)&&new Set(c.split('-')).size===3;
@@ -134,11 +133,10 @@ $('l12venue').onchange=render;$('l12direction').onchange=render;$('l12refresh').
    if(venue&&venues(x)!==venue)continue;
    const p=ptn(x),order=x.result?.order,c=Array.isArray(order)?order.slice(0,3).join('-'):'';
    if(!p||!valid(c))continue;
-   const pair=`${order[0]}-${order[1]}`;
-   if(!groups.has(p.key))groups.set(p.key,{...p,n:0,tickets:new Map(),axes:new Map()});
-   const g=groups.get(p.key);g.n++;g.tickets.set(c,(g.tickets.get(c)||0)+1);g.axes.set(pair,(g.axes.get(pair)||0)+1);
-   if(!base.has(p.band))base.set(p.band,{n:0,tickets:new Map(),axes:new Map()});
-   const b=base.get(p.band);b.n++;b.tickets.set(c,(b.tickets.get(c)||0)+1);b.axes.set(pair,(b.axes.get(pair)||0)+1);
+   if(!groups.has(p.key))groups.set(p.key,{...p,n:0,tickets:new Map()});
+   const g=groups.get(p.key);g.n++;g.tickets.set(c,(g.tickets.get(c)||0)+1);
+   if(!base.has(p.band))base.set(p.band,{n:0,tickets:new Map()});
+   const b=base.get(p.band);b.n++;b.tickets.set(c,(b.tickets.get(c)||0)+1);
   }
   const out=[];
   for(const g of groups.values()){
@@ -152,46 +150,36 @@ $('l12venue').onchange=render;$('l12direction').onchange=render;$('l12refresh').
   }
   return out.sort((a,b)=>b.n-a.n||b.lift-a.lift||b.count-a.count).slice(0,20);
  }
- function deriveAxes(rows,venue){
-  const groups=new Map(),base=new Map();
-  for(const x of rows){
-   if(venue&&venues(x)!==venue)continue;
-   const p=ptn(x),order=x.result?.order,c=Array.isArray(order)?order.slice(0,3).join('-'):'';
-   if(!p||!valid(c))continue;
-   const pair=`${order[0]}-${order[1]}`;
-   if(!groups.has(p.key))groups.set(p.key,{n:0,counts:new Map(),band:p.band});
-   const g=groups.get(p.key);g.n++;g.counts.set(pair,(g.counts.get(pair)||0)+1);
-   if(!base.has(p.band))base.set(p.band,{n:0,counts:new Map()});
-   const b=base.get(p.band);b.n++;b.counts.set(pair,(b.counts.get(pair)||0)+1);
-  }
-  const out=[];
-  for(const [key,g] of groups){
-   const b=base.get(g.band);if(g.n<30||b.n<30)continue;
-   for(const [pair,count] of g.counts){
-    const rate=count/g.n,baseline=(b.counts.get(pair)||0)/b.n,lift=baseline?rate/baseline:0;
-    if(count<4||rate<.12||lift<1.15)continue;
-    const [head,axis]=pair.split('-').map(Number);
-    out.push({venue,key,head,axis,n:g.n,count,rate:Number(rate.toFixed(4)),lift:Number(lift.toFixed(2))});
+ function finishRules(rows){
+  const groups=new Map();
+  const norm=s=>/まくり差し/.test(s)?'まくり差し':/まくり/.test(s)?'まくり':/差し/.test(s)?'差し':/逃げ/.test(s)?'逃げ':null;
+  const seen=new Set();
+  for(const r of rows){
+   if(seen.has(r.key))continue;seen.add(r.key);
+   const order=r.result?.order,method=norm(String(r.result?.move||''));
+   if(!Array.isArray(order)||!valid(order.slice(0,3).join('-'))||!method)continue;
+   const head=Number(order[0]),c=order.slice(0,3).join('-'),venue=venues(r);
+   for(const v of ['',venue].filter((v,i,a)=>a.indexOf(v)===i)){
+    const key=`${v}|${head}|${method}`;
+    let g=groups.get(key);if(!g){g={venue:v,head,method,n:0,combos:{}};groups.set(key,g);}
+    g.n++;g.combos[c]=(g.combos[c]||0)+1;
    }
   }
-  return out.sort((a,b)=>b.n-a.n||b.lift-a.lift||b.count-a.count).slice(0,20);
+  return [...groups.values()];
  }
  function payload(){
-  const rows=window.__LAB12_GET_RECORDS?.()||[];
+  const rows=Array.isArray(window.__LAB12_RECORDS)?window.__LAB12_RECORDS:[];
   const codes=[...new Set(rows.map(venues).filter(c=>/^(0[1-9]|1\d|2[0-4])$/.test(c)))];
-  const byEvidence=(a,b)=>b.n-a.n||b.lift-a.lift||b.count-a.count;
-  const localRules=codes.flatMap(c=>derive(rows,c)).sort(byEvidence);
-  const localAxes=codes.flatMap(c=>deriveAxes(rows,c)).sort(byEvidence);
-  const rules=[...derive(rows,'').slice(0,12),...localRules.slice(0,12)];
-  const axisRules=[...deriveAxes(rows,'').slice(0,12),...localAxes.slice(0,12)];
-  return {schema:'DEME_LAB_ATTACK_RULES_V1',generatedAt:new Date().toISOString(),rules,axisRules,coverage:{confirmed:rows.length},annualWorst:window.__LAB2026?.snapshot?.()||null};
+  const rules=[...derive(rows,''),...codes.flatMap(c=>derive(rows,c))]
+   .sort((a,b)=>b.n-a.n||b.lift-a.lift||b.count-a.count).slice(0,50);
+  return {schema:'DEME_LAB_ATTACK_RULES_V1',generatedAt:new Date().toISOString(),rules,finishRules:finishRules(rows),annualWorst:window.__LAB2026?.snapshot?.()||null};
  }
  let lastRules='';
- function save(){const data=payload(),signature=JSON.stringify([data.rules,data.axisRules,data.coverage,data.annualWorst]);try{if(signature!==lastRules){localStorage.setItem(STORE,JSON.stringify(data));lastRules=signature}state.textContent=`確定${data.coverage.confirmed}R｜出目${data.rules.length}件・軸${data.axisRules.length}件。30R未満の条件は買い目へ反映しません。`;}catch(e){state.textContent='保存できません：'+e.message}return data}
+ function save(){const data=payload(),signature=JSON.stringify([data.rules,data.finishRules,data.annualWorst]);try{if(signature!==lastRules){localStorage.setItem(STORE,JSON.stringify(data));lastRules=signature}state.textContent=`研究所の候補 ${data.rules.length}件を準備しました（30件未満の条件は除外）。`;}catch(e){state.textContent='保存できません：'+e.message}return data}
  button.addEventListener('click',()=>{
   const data=save();try{
-   const compressed=JSON.stringify(data);if(compressed.length>12000)throw Error('候補が多すぎます。研究データを整理してください');
-   const url=new URL('/',location.origin);url.hash='labRules='+encodeURIComponent(btoa(unescape(encodeURIComponent(compressed))));
+   const compressed=JSON.stringify(data);
+   const url=new URL('/',location.origin);if(compressed.length<=12000)url.hash='labRules='+encodeURIComponent(btoa(unescape(encodeURIComponent(compressed))));
    location.assign(url.toString());
   }catch(e){state.textContent='HUNTERへ送れません：'+e.message}
  });
@@ -235,7 +223,7 @@ $('l12venue').onchange=render;$('l12direction').onchange=render;$('l12refresh').
  function parse(json,date){const stadiums=json?.programs?.stadiums;if(!stadiums||typeof stadiums!=='object')throw Error('結果データの形式が違います');const counts={};let races=0;for(const venue of Object.values(stadiums)){for(const race of Object.values(venue?.races||{})){for(const pay of race?.result?.payouts?.trifecta||[]){const c=String(pay.combination||'').trim();if(valid(c)){counts[c]=(counts[c]||0)+1;races++}}}}if(!races)throw Error('確定出目がありません');return {date,counts,races,source:'boatraceopenapi/v1'}}
  let rows=[],running=false;
  function ranked(){const sums=Object.fromEntries(combos.map(c=>[c,0]));let races=0;for(const row of rows){races+=row.races;for(const [c,n] of Object.entries(row.counts))if(valid(c))sums[c]+=n}const byHead={};for(let h=1;h<=6;h++){const list=combos.filter(c=>+c[0]===h);byHead[h]={top:[...list].sort((a,b)=>sums[b]-sums[a]||a.localeCompare(b)).slice(0,10),worst:[...list].sort((a,b)=>sums[a]-sums[b]||a.localeCompare(b)).slice(0,10)}}return {sums,byHead,races}}
- function snapshot(){const expected=dates(),available=new Set(rows.map(r=>r.date)),complete=expected.length>0&&expected.every(d=>available.has(d));if(!complete)return null;const {byHead,races}=ranked();return {year:2026,through:expected.at(-1),days:expected.length,races,excluded:Object.fromEntries(Object.entries(byHead).map(([h,x])=>[h,x.worst.slice(0,8)]))}}
+ function snapshot(){const expected=dates(),available=new Set(rows.map(r=>r.date)),complete=expected.length>0&&expected.every(d=>available.has(d));if(!complete)return null;const {byHead,races,sums}=ranked();return {counts:sums,year:2026,through:expected.at(-1),days:expected.length,races,excluded:Object.fromEntries(Object.entries(byHead).map(([h,x])=>[h,x.worst.slice(0,8)]))}}
  function render(message=''){const expected=dates(),available=new Set(rows.map(r=>r.date)),loaded=expected.filter(d=>available.has(d)).length,{sums,byHead,races}=ranked(),complete=!!snapshot();state.textContent=`${message?message+'｜':''}2026/1/1〜${expected.at(-1)||'未到達'}：${loaded}/${expected.length}日・確定3連単 ${races}件。${complete?'各艇頭ワースト8をHUNTERへ送れます（前付けなしのときだけ除外）。':'未取得日があるため、買い目除外は保留。'}`;tables.replaceChildren();for(let h=1;h<=6;h++){const div=document.createElement('div');div.className='l18head';const title=document.createElement('h3');title.textContent=h+'号艇頭';div.append(title);const columns=document.createElement('div');columns.className='l18columns';for(const [label,list,cls] of [['TOP10',byHead[h].top,''],['ワースト10',byHead[h].worst,'l18bad']]){const cell=document.createElement('div'),cap=document.createElement('strong'),ol=document.createElement('ol');cap.textContent=label;cap.className=cls;for(const c of list){const li=document.createElement('li');li.textContent=`${c}：${sums[c]}回`;ol.append(li)}cell.append(cap,ol);columns.append(cell)}div.append(columns);tables.append(div)}}
  async function refresh(){rows=(await all()).filter(r=>/^2026\d{4}$/.test(r.date)&&r.counts&&Number.isInteger(r.races));render()}
  async function fetchDay(date){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);try{const response=await fetch(`https://boatraceopenapi.github.io/api/v1/2026/${date}.json`,{signal:controller.signal});if(!response.ok)throw Error('HTTP '+response.status);return parse(await response.json(),date)}finally{clearTimeout(timer)}}
